@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">▤</span>
+      <div>
+        <h1>Library Management System</h1>
+        <p>Read · Learn · Grow</p>
+      </div>
+    </div>
+
+    <div class="header-tools">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search books, students..."
+        aria-label="Search books and students"
+      >
+      <span class="admin">Admin</span>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <button type="button" id="logout-btn" class="logout-button">
+  Logout
+</button>
+    <nav aria-label="Main navigation">
+      <button class="nav-item active" data-view="dashboard">
+        <span aria-hidden="true">⌂</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="books">
+        <span aria-hidden="true">▤</span> Books
+      </button>
+      <button class="nav-item" data-view="students">
+        <span aria-hidden="true">♙</span> Students
+      </button>
+      <button class="nav-item" data-action="issue">
+        <span aria-hidden="true">→</span> Issue Book
+      </button>
+      <button class="nav-item" data-action="return">
+        <span aria-hidden="true">↶</span> Return Book
+      </button>
+      <button class="nav-item" data-view="reports">
+        <span aria-hidden="true">▥</span> Reports
+      </button>
+      <button class="nav-item" data-view="overdue">
+        <span aria-hidden="true">!</span> Overdue Books
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="book-art" aria-hidden="true">
+        <i></i><i></i><i></i><i></i>
+      </div>
+      <p>A Better<br>Tomorrow<br>Through Books</p>
+    </div>
+  </aside>
+
+  <main>
+    <div class="page-heading">
+      <div>
+        <h2 id="page-title">Dashboard</h2>
+        <p id="page-description">
+          Welcome back, Admin! Here’s an overview of your library.
+        </p>
+      </div>
+      <div id="clock" class="clock"></div>
+    </div>
+
+    <section class="stats" aria-label="Library totals">
+      <article class="stat green">
+        <span class="stat-icon" aria-hidden="true">▤</span>
+        <div>
+          <h3>Total Books</h3>
+          <strong id="total-books">0</strong>
+          <p>Copies in library</p>
+        </div>
+      </article>
+
+      <article class="stat blue">
+        <span class="stat-icon" aria-hidden="true">♙</span>
+        <div>
+          <h3>Total Students</h3>
+          <strong id="total-students">0</strong>
+          <p>Registered students</p>
+        </div>
+      </article>
+
+      <article class="stat orange">
+        <span class="stat-icon" aria-hidden="true">▣</span>
+        <div>
+          <h3>Issued Books</h3>
+          <strong id="issued-books">0</strong>
+          <p>Currently issued</p>
+        </div>
+      </article>
+
+      <article class="stat red">
+  <span class="stat-icon" aria-hidden="true">!</span>
+
+  <div>
+    <h3>Overdue Books</h3>
+    <strong id="overdue-books">0</strong>
+    <p>Need attention</p>
+
+    <button
+      type="button"
+      class="overdue-card-link"
+      data-view="overdue"
+    >
+      View overdue books
+    </button>
+  </div>
+</article>
+    </section>
+
+    <section id="dashboard-view" class="view">
+      <div
+  id="reservation-notices"
+  class="reservation-notices"
+  aria-live="polite"
+  hidden
+></div>
+      <div class="dashboard-grid">
+        <article class="panel">
+          <div class="panel-heading">
+            <h3>Recent Issued Books</h3>
+            <button
+  type="button"
+  class="nav-item"
+  data-view="reservations"
+>
+  <span aria-hidden="true">≡</span> Reservations
+</button>
+            <button class="text-button" data-view="reports">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Book Title</th>
+                  <th>Student Name</th>
+                  <th>Issue Date</th>
+                </tr>
+              </thead>
+              <tbody id="recent-issues"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3>Quick Actions</h3>
+          <div class="quick-actions">
+            <button class="green" data-action="book">
+              <span aria-hidden="true">+</span> Add Book
+            </button>
+            <button class="blue" data-action="student">
+              <span aria-hidden="true">+</span> Add Student
+            </button>
+            <button class="orange" data-action="issue">
+              <span aria-hidden="true">→</span> Issue Book
+            </button>
+            <button class="purple" data-action="return">
+              <span aria-hidden="true">↶</span> Return Book
+            </button>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3>Library Statistics</h3>
+          <div class="bar-chart" id="bar-chart"></div>
+        </article>
+
+        <article class="panel">
+          <h3>Book Category Distribution</h3>
+          <div class="category-chart">
+            <div id="donut" class="donut">
+              <div>
+                <strong id="donut-total">0</strong>
+                <span>Books</span>
+              </div>
+            </div>
+            <ul id="category-legend" class="legend"></ul>
+          </div>
+        </article>
+      </div>
+
+      <blockquote>
+        “Books are a uniquely portable magic.”
+        <cite>— Stephen King</cite>
+      </blockquote>
+    </section>
+
+    <section id="books-view" class="view" hidden>
+      <article class="panel">
+        <div class="panel-heading">
+          <h3>Book Inventory</h3>
+          <button class="primary-button" data-action="book">Add Book</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Total Copies</th>
+                <th>Available</th>
+              </tr>
+            </thead>
+            <tbody id="books-table"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="students-view" class="view" hidden>
+      <article class="panel">
+        <div class="panel-heading">
+          <h3>Registered Students</h3>
+          <button class="primary-button" data-action="student">
+            Add Student
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Active Loans</th>
+              </tr>
+            </thead>
+            <tbody id="students-table"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="reports-view" class="view" hidden>
+      <article class="panel">
+        <div class="panel-heading">
+          <h3>Loan History</h3>
+          <button class="primary-button" id="print-report">Print Report</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Student</th>
+                <th>Issued</th>
+                <th>Due</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="reports-table"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+<section id="overdue-view" class="view" hidden>
+  <article class="panel">
+    <div class="panel-heading">
+      <h3>Overdue Loans</h3>
+
+      <button class="primary-button" data-action="return">
+        Return a Book
+      </button>
+    </div>
+
+    <p id="overdue-summary"></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Student</th>
+            <th>Due Date</th>
+            <th>Days Overdue</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="overdue-table"></tbody>
+      </table>
+    </div>
+  </article>
+</section>
+<section id="reservations-view" class="view" hidden>
+  <article class="panel">
+    <div class="panel-heading">
+      <h3>Book Reservations</h3>
+
+      <button
+        type="button"
+        class="primary-button"
+        data-action="reserve"
+      >
+        Reserve Book
+      </button>
+    </div>
+
+    <p>
+      Reserve books when all unreserved copies are unavailable.
+      Returned copies are offered to waiting students in order.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Student</th>
+            <th>Queue Position</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="reservations-table"></tbody>
+      </table>
+    </div>
+  </article>
+</section>
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+
+  <dialog id="modal">
+    <div class="modal-heading">
+      <h2 id="modal-title">Add Book</h2>
+      <button id="close-modal" class="close-button" aria-label="Close">
+        ×
+      </button>
+    </div>
+    <form id="action-form"></form>
+  </dialog>
+</body>
+</html>
